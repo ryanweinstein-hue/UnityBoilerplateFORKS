@@ -14,10 +14,13 @@ public class PlayerMovement : MonoBehaviour
     public int jumpHeight;
     public float DeploymentHeight;
 
+    public AudioClip jumpSound;
+    private AudioSource aud;
     private int coins;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        aud = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody>();
         coins = 0;
         
@@ -32,6 +35,9 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = new Vector3(rb.linearVelocity.x + move * speed, rb.linearVelocity.y, 0);
         if(jump > .05f && isGrounded())
         {
+            aud.Stop();
+            aud.clip = jumpSound;
+            aud.Play();
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpHeight, 0);
         }
     }
@@ -66,6 +72,10 @@ public class PlayerMovement : MonoBehaviour
     {
         if(other.tag == "Coin")
         {
+            aud.Stop();
+            AudioClip noise = other.GetComponent<AudioSource>().clip;
+            aud.clip = noise;
+            aud.Play();
             Destroy(other.gameObject);
             coins++;
         }
